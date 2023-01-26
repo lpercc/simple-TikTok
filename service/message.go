@@ -3,7 +3,7 @@ package service
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/RaymondCode/simple-demo/controller"
+	"github.com/lpercc/simple-TikTok/controller"
 	"io"
 	"net"
 	"sync"

@@ -1,4 +1,4 @@
-package main
+package repository
 
 import (
 	"gorm.io/driver/mysql"
@@ -11,7 +11,7 @@ type Product struct {
 	Price uint
 }
 
-func main() {
+func Initgorm() {
 	db, err := gorm.Open(
 		mysql.Open("root:123456@tcp(127.0.0.1:3306)/world?charset=utf8"),
 		&gorm.Config{})
