@@ -6,7 +6,7 @@ import (
 )
 
 type Product struct {
-	gorm.Model
+	Id    int64
 	Code  string
 	Price uint
 }
