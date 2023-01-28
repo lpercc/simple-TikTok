@@ -5,6 +5,7 @@ import (
 	"gorm.io/gorm"
 )
 
+var LocalIp = "192.168.196.76"
 var db *gorm.DB
 
 func ConnectAndCheck() {

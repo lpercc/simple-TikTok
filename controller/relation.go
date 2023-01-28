@@ -28,7 +28,7 @@ func FollowList(c *gin.Context) {
 		Response: repository.Response{
 			StatusCode: 0,
 		},
-		UserList: []repository.User{repository.DemoUser},
+		UserList: []repository.User{DemoUser},
 	})
 }
 
@@ -38,7 +38,7 @@ func FollowerList(c *gin.Context) {
 		Response: repository.Response{
 			StatusCode: 0,
 		},
-		UserList: []repository.User{repository.DemoUser},
+		UserList: []repository.User{DemoUser},
 	})
 }
 
@@ -48,6 +48,6 @@ func FriendList(c *gin.Context) {
 		Response: repository.Response{
 			StatusCode: 0,
 		},
-		UserList: []repository.User{repository.DemoUser},
+		UserList: []repository.User{DemoUser},
 	})
 }

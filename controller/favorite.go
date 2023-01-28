@@ -23,6 +23,6 @@ func FavoriteList(c *gin.Context) {
 		Response: repository.Response{
 			StatusCode: 0,
 		},
-		VideoList: repository.DemoVideos,
+		VideoList: DemoVideos,
 	})
 }

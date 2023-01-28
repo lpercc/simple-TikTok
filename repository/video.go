@@ -39,8 +39,10 @@ func FeedVedioList(Maxnum int64) (Videos []Video) {
 		//fmt.Println(i, videoDb)
 		video.Id = videoDb.Id
 		video.Author = user
-		video.PlayUrl = videoDb.PlayUrl
-		video.CoverUrl = videoDb.CoverUrl
+		//数据库中videoDb.PlayUrl是相对地址，video.PlayUrl需要带本机IP和端口的绝对地址，
+		//视频是在本地Public文件夹
+		video.PlayUrl = "http://" + LocalIp + ":8080/" + videoDb.PlayUrl
+		video.CoverUrl = "http://" + LocalIp + ":8080/" + videoDb.CoverUrl
 		video.FavoriteCount = videoDb.FavoriteCount
 		video.CommentCount = videoDb.CommentCount
 		video.IsFavorite = videoDb.IsFavorite

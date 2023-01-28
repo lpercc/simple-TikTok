@@ -1,6 +1,8 @@
-package repository
+package controller
 
-var DemoVideos = []Video{
+import "github.com/lpercc/simple-TikTok/repository"
+
+var DemoVideos = []repository.Video{
 	{
 		Id:            1,
 		Author:        DemoUser,
@@ -21,7 +23,7 @@ var DemoVideos = []Video{
 	},
 }
 
-var DemoComments = []Comment{
+var DemoComments = []repository.Comment{
 	{
 		Id:         1,
 		User:       DemoUser,
@@ -30,7 +32,7 @@ var DemoComments = []Comment{
 	},
 }
 
-var DemoUser = User{
+var DemoUser = repository.User{
 	Id:            1,
 	Name:          "TestUser",
 	FollowCount:   0,
