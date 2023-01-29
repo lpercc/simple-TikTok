@@ -5,7 +5,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var LocalIp = "192.168.196.76"
+var LocalIp = "192.168.101.17"
 var db *gorm.DB
 
 func ConnectAndCheck() {
@@ -18,7 +18,7 @@ func ConnectAndCheck() {
 		panic("failed to connect database")
 	}
 	// Migrate the schema
-	if db.AutoMigrate(&Videolists{}, &User{}) != nil {
+	if db.AutoMigrate(&Videolists{}, &User{}, &Comments{}) != nil {
 		panic("failed to create table")
 	}
 	/*

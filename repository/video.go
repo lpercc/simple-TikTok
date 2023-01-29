@@ -2,14 +2,10 @@ package repository
 
 import (
 	"gorm.io/gorm"
-	"time"
 )
 
 type Videolists struct {
-	Id            int64 `gorm:"primaryKey"`
-	CreatedAt     time.Time
-	UpdatedAt     time.Time
-	DeletedAt     gorm.DeletedAt `gorm:"index"`
+	gorm.Model
 	AuthorId      int64
 	PlayUrl       string
 	CoverUrl      string
@@ -19,7 +15,7 @@ type Videolists struct {
 }
 
 func FeedVedioList(Maxnum int64) (Videos []Video) {
-	var video Video
+	//var video Video
 	var count int64
 	db.Model(&Videolists{}).Count(&count)
 	if Maxnum > count {
@@ -37,15 +33,17 @@ func FeedVedioList(Maxnum int64) (Videos []Video) {
 			panic("Author can't be find")
 		}
 		//fmt.Println(i, videoDb)
-		video.Id = videoDb.Id
-		video.Author = user
-		//数据库中videoDb.PlayUrl是相对地址，video.PlayUrl需要带本机IP和端口的绝对地址，
-		//视频是在本地Public文件夹
-		video.PlayUrl = "http://" + LocalIp + ":8080/" + videoDb.PlayUrl
-		video.CoverUrl = "http://" + LocalIp + ":8080/" + videoDb.CoverUrl
-		video.FavoriteCount = videoDb.FavoriteCount
-		video.CommentCount = videoDb.CommentCount
-		video.IsFavorite = videoDb.IsFavorite
+		video := Video{
+			Id:     int64(videoDb.ID),
+			Author: user,
+			//数据库中videoDb.PlayUrl是相对地址，video.PlayUrl需要带本机IP和端口的绝对地址，
+			//视频是在本地Public文件夹
+			PlayUrl:       "http://" + LocalIp + ":8080/" + videoDb.PlayUrl,
+			CoverUrl:      "http://" + LocalIp + ":8080/" + videoDb.CoverUrl,
+			FavoriteCount: videoDb.FavoriteCount,
+			CommentCount:  videoDb.CommentCount,
+			IsFavorite:    videoDb.IsFavorite,
+		}
 		//fmt.Println(video)
 		Videos = append(Videos, video)
 	}

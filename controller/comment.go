@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/lpercc/simple-TikTok/repository"
 	"net/http"
+	"strconv"
 )
 
 type CommentListResponse struct {
@@ -41,8 +42,9 @@ func CommentAction(c *gin.Context) {
 
 // CommentList all videos have same demo comment list
 func CommentList(c *gin.Context) {
+	videoId, _ := strconv.ParseInt(c.Query("video_id"), 10, 64)
 	c.JSON(http.StatusOK, CommentListResponse{
 		Response:    repository.Response{StatusCode: 0},
-		CommentList: DemoComments,
+		CommentList: repository.CommentList(videoId),
 	})
 }
