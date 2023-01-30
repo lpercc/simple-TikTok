@@ -28,3 +28,25 @@ func CommentList(video_id int64) (commentlist []Comment) {
 	}
 	return commentlist
 }
+
+// CommentActionAdd Add comment to DB
+func CommentActionAdd(content string, userid int64, videoid int64) (id int64) {
+	comments := Comments{
+		VideoId:  videoid,
+		AuthorId: userid,
+		Content:  content,
+	}
+	// insert new comments
+	if db.Create(&comments).Error != nil {
+		panic("failed to insert")
+	}
+	// video's comment count +1
+	if db.Model(&Videolists{}).Where("id = ?", videoid).Update("comment_count", gorm.Expr("comment_count+?", 1)).Error != nil {
+		panic("failed to update table video_list")
+	}
+	// get comment id
+	if db.Last(&comments, "author_id=?", videoid).Error != nil {
+		panic("Author can't be find")
+	}
+	return int64(comments.ID)
+}
