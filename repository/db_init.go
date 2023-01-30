@@ -18,7 +18,7 @@ func ConnectAndCheck() {
 		panic("failed to connect database")
 	}
 	// Migrate the schema
-	if db.AutoMigrate(&Videolists{}, &User{}, &Comments{}) != nil {
+	if db.AutoMigrate(&Videolists{}, &User{}, &Comments{}, &Favoritelists{}) != nil {
 		panic("failed to create table")
 	}
 	/*
