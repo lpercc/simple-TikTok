@@ -15,9 +15,17 @@ type FeedResponse struct {
 
 // Feed same demo video list for every request
 func Feed(c *gin.Context) {
+	token := c.Query("token")
+	var userId int64
+	// if user is not exist,userId = -1
+	if user, exist := usersLoginInfo[token]; exist {
+		userId = user.Id
+	} else {
+		userId = -1
+	}
 	c.JSON(http.StatusOK, FeedResponse{
 		Response:  repository.Response{StatusCode: 0},
-		VideoList: repository.FeedVedioList(30),
+		VideoList: repository.FeedVedioList(userId),
 		NextTime:  time.Now().Unix(),
 	})
 }

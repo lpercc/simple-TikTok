@@ -9,14 +9,14 @@ import (
 
 // usersLoginInfo use map to store user info, and key is username+password for demo
 // user data will be cleared every time the server starts
-// test data: username=zhanglei, password=douyin
+// test data: username=TestUser, password=123456
 var usersLoginInfo = map[string]repository.User{
-	"zhangleidouyin": {
+	"TestUser123456": {
 		Id:            1,
-		Name:          "zhanglei",
-		FollowCount:   10,
-		FollowerCount: 5,
-		IsFollow:      true,
+		Name:          "TestUser",
+		FollowCount:   0,
+		FollowerCount: 0,
+		IsFollow:      false,
 	},
 }
 

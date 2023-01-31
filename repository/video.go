@@ -14,38 +14,53 @@ type Videolists struct {
 	IsFavorite    bool
 }
 
-func FeedVedioList(Maxnum int64) (Videos []Video) {
-	//var video Video
+func FeedVedioList(userId int64) (Videos []Video) {
 	var count int64
+	Maxnum := int64(30)
+	// video record count
 	db.Model(&Videolists{}).Count(&count)
 	if Maxnum > count {
 		Maxnum = count
 	}
 	for i := int64(0); i < Maxnum; i++ {
-		var (
-			videoDb Videolists
-			user    User
-		)
-		if err := db.Find(&videoDb, count-i).Error; err != nil {
-			return Videos
-		}
-		if db.Find(&user, videoDb.AuthorId).Error != nil {
-			panic("Author can't be find")
-		}
-		//fmt.Println(i, videoDb)
-		video := Video{
-			Id:     int64(videoDb.ID),
-			Author: user,
-			//数据库中videoDb.PlayUrl是相对地址，video.PlayUrl需要带本机IP和端口的绝对地址，
-			//视频是在本地Public文件夹
-			PlayUrl:       "http://" + LocalIp + ":8080/" + videoDb.PlayUrl,
-			CoverUrl:      "http://" + LocalIp + ":8080/" + videoDb.CoverUrl,
-			FavoriteCount: videoDb.FavoriteCount,
-			CommentCount:  videoDb.CommentCount,
-			IsFavorite:    videoDb.IsFavorite,
-		}
-		//fmt.Println(video)
-		Videos = append(Videos, video)
+		Videos = append(Videos, FeedVideo(count-i, userId))
 	}
 	return Videos
+}
+
+// FeedVideo feed only one video Inf
+func FeedVideo(videoId int64, userId int64) (video Video) {
+	var (
+		videoDb Videolists
+		author  User
+		count   int64
+	)
+	// search a video record by videoid
+	if err := db.Find(&videoDb, videoId).Error; err != nil {
+		return video
+	}
+	// search a user record by authorid
+	if db.Find(&author, videoDb.AuthorId).Error != nil {
+		panic("Author can't be find")
+	}
+	// search a favorite record by userid and videoid
+	if db.Model(&Favoritelists{}).Where("user_id=?", userId).Where("video_id=?", videoId).Count(&count).Error != nil {
+		panic("failed to find a favorite record")
+	}
+	// the video is user's favorite,user is existed
+	if count == 1 && userId != -1 {
+		videoDb.IsFavorite = true
+	}
+	// format to video interface
+	return Video{
+		Id:     int64(videoDb.ID),
+		Author: author,
+		//数据库中videoDb.PlayUrl是相对地址，video.PlayUrl需要带本机IP和端口的绝对地址，
+		//视频是在本地Public文件夹
+		PlayUrl:       "http://" + LocalIp + ":8080/" + videoDb.PlayUrl,
+		CoverUrl:      "http://" + LocalIp + ":8080/" + videoDb.CoverUrl,
+		FavoriteCount: videoDb.FavoriteCount,
+		CommentCount:  videoDb.CommentCount,
+		IsFavorite:    videoDb.IsFavorite,
+	}
 }
