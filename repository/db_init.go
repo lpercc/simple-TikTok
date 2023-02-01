@@ -1,15 +1,17 @@
 package repository
 
 import (
+	"log"
+
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
-var LocalIp = "192.168.101.17"
+var LocalIp = "192.168.10.217"
 var db *gorm.DB
 
 func ConnectAndCheck() {
-	dsn := "root:123456@tcp(127.0.0.1:3306)/simple-tiktok?charset=utf8mb4&parseTime=True&loc=Local"
+	dsn := "root:123456@tcp(127.0.0.1:3306)/simple-tiktok?charset=utf8&parseTime=True&loc=Local"
 	var err error
 	db, err = gorm.Open(
 		mysql.Open(dsn),
@@ -18,12 +20,12 @@ func ConnectAndCheck() {
 		panic("failed to connect database")
 	}
 	// Migrate the schema
-	if db.AutoMigrate(&Videolists{}, &User{}, &Comments{}, &Favoritelists{}) != nil {
+	if db.AutoMigrate(&Videolist{}, &User{}, &Comments{}, &Favoritelists{}) != nil {
 		panic("failed to create table")
 	}
 	/*
 		//Create
-		var DemoVideos = []Videolists{
+		var DemoVideos = []Videolist{
 			{
 				AuthorId:      1,
 				PlayUrl:       "https://www.w3schools.com/html/movie.mp4",
@@ -45,4 +47,16 @@ func ConnectAndCheck() {
 		db.Create(&DemoVideos)
 
 	*/
+	_db, err := db.DB()
+	if err != nil {
+		log.Fatalln("db connected error ", err)
+	}
+
+	_db.SetMaxOpenConns(100)
+	_db.SetMaxIdleConns(20)
+
+}
+
+func GetDB() *gorm.DB {
+	return db
 }

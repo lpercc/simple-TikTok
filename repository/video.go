@@ -1,10 +1,12 @@
 package repository
 
 import (
+	"log"
+
 	"gorm.io/gorm"
 )
 
-type Videolists struct {
+type Videolist struct {
 	gorm.Model
 	AuthorId      int64
 	PlayUrl       string
@@ -14,11 +16,18 @@ type Videolists struct {
 	IsFavorite    bool
 }
 
+func SaveVideo(newVideo *Videolist){
+	err := GetDB().Create(newVideo)
+	if err != nil{
+		log.Println("Insert user error",err)
+	}
+}
+
 func FeedVedioList(userId int64) (Videos []Video) {
 	var count int64
 	Maxnum := int64(30)
 	// video record count
-	db.Model(&Videolists{}).Count(&count)
+	GetDB().Model(&Videolist{}).Count(&count)
 	if Maxnum > count {
 		Maxnum = count
 	}
@@ -31,7 +40,7 @@ func FeedVedioList(userId int64) (Videos []Video) {
 // FeedVideo feed only one video Inf
 func FeedVideo(videoId int64, userId int64) (video Video) {
 	var (
-		videoDb Videolists
+		videoDb Videolist
 		author  User
 		count   int64
 	)

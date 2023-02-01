@@ -15,8 +15,8 @@ func FavoriteActionAdd(userId int64, videoId int64) {
 		panic("failed to insert favorite info")
 	}
 	//video FavoriteCount+1
-	if db.Model(&Videolists{}).Where("id=?", videoId).Update("favorite_count", gorm.Expr("favorite_count+?", 1)).Error != nil {
-		panic("failed to update VideoLists table")
+	if db.Model(&Videolist{}).Where("id=?", videoId).Update("favorite_count", gorm.Expr("favorite_count+?", 1)).Error != nil {
+		panic("failed to update Videolist table")
 	}
 }
 
@@ -28,8 +28,8 @@ func FavoriteActionCancel(userId int64, videoId int64) {
 		panic("failed to insert favorite info")
 	}
 	//video FavoriteCount-1
-	if db.Model(&Videolists{}).Where("id=?", videoId).Update("favorite_count", gorm.Expr("favorite_count-?", 1)).Error != nil {
-		panic("failed to update VideoLists table")
+	if db.Model(&Videolist{}).Where("id=?", videoId).Update("favorite_count", gorm.Expr("favorite_count-?", 1)).Error != nil {
+		panic("failed to update Videolist table")
 	}
 }
 

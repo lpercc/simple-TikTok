@@ -41,7 +41,7 @@ func CommentActionAdd(content string, userid int64, videoid int64) (id int64) {
 		panic("failed to insert")
 	}
 	// video's comment count +1
-	if db.Model(&Videolists{}).Where("id = ?", videoid).Update("comment_count", gorm.Expr("comment_count+?", 1)).Error != nil {
+	if db.Model(&Videolist{}).Where("id = ?", videoid).Update("comment_count", gorm.Expr("comment_count+?", 1)).Error != nil {
 		panic("failed to update table video_list")
 	}
 	// get comment id
