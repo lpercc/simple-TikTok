@@ -2,16 +2,16 @@ package repository
 
 import "gorm.io/gorm"
 
-type Comments struct {
+type CommentList struct {
 	gorm.Model
 	VideoId  int64
 	AuthorId int64
 	Content  string
 }
 
-func CommentList(video_id int64) (commentlist []Comment) {
-	var comments []Comments
-	if db.Find(&comments, "video_id=?", video_id).Error != nil {
+func FeedCommentList(video_id int64) (commentlist []Comment) {
+	var comments []CommentList
+	if GetDB().Find(&comments, "video_id=?", video_id).Error != nil {
 		return commentlist
 	}
 	for _, comment := range comments {
@@ -31,7 +31,7 @@ func CommentList(video_id int64) (commentlist []Comment) {
 
 // CommentActionAdd Add comment to DB
 func CommentActionAdd(content string, userid int64, videoid int64) (id int64) {
-	comments := Comments{
+	comments := CommentList{
 		VideoId:  videoid,
 		AuthorId: userid,
 		Content:  content,
@@ -41,7 +41,7 @@ func CommentActionAdd(content string, userid int64, videoid int64) (id int64) {
 		panic("failed to insert")
 	}
 	// video's comment count +1
-	if db.Model(&Videolist{}).Where("id = ?", videoid).Update("comment_count", gorm.Expr("comment_count+?", 1)).Error != nil {
+	if db.Model(&VideoList{}).Where("id = ?", videoid).Update("comment_count", gorm.Expr("comment_count+?", 1)).Error != nil {
 		panic("failed to update table video_list")
 	}
 	// get comment id

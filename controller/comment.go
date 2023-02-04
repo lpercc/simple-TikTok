@@ -48,6 +48,6 @@ func CommentList(c *gin.Context) {
 	videoId, _ := strconv.ParseInt(c.Query("video_id"), 10, 64)
 	c.JSON(http.StatusOK, CommentListResponse{
 		Response:    repository.Response{StatusCode: 0},
-		CommentList: repository.CommentList(videoId),
+		CommentList: repository.FeedCommentList(videoId),
 	})
 }
