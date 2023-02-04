@@ -23,7 +23,7 @@ func CommentAction(c *gin.Context) {
 	token := c.Query("token")
 	actionType := c.Query("action_type")
 
-	if user, exist := usersLoginInfo[token]; exist {
+	if user, exist := repository.UsersLoginInfo(token); exist {
 		if actionType == "1" {
 			text := c.Query("comment_text")
 			videoId, _ := strconv.ParseInt(c.Query("video_id"), 10, 64)

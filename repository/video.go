@@ -67,11 +67,11 @@ func FeedVideo(videoId int64, userId int64) (video Video) {
 		//数据库中videoDb.PlayUrl是相对地址，video.PlayUrl需要带本机IP和端口的绝对地址，
 		//视频是在本地Public文件夹
 		// 1内网访问
-		//PlayUrl:       "http://" + LOCALIPV_4 + ":8080/" + videoDb.PlayUrl,
-		//CoverUrl:      "http://" + LOCALIPV_4 + ":8080/" + videoDb.CoverUrl,
+		PlayUrl:  "http://" + LOCALIPV_4 + ":8080/" + videoDb.PlayUrl,
+		CoverUrl: "http://" + LOCALIPV_4 + ":8080/" + videoDb.CoverUrl,
 		// 2远程访问
-		PlayUrl:       "http://1af0010a.r6.cpolar.top/" + videoDb.PlayUrl,
-		CoverUrl:      "http://1af0010a.r6.cpolar.top/" + videoDb.CoverUrl,
+		//PlayUrl:       "http://1af0010a.r6.cpolar.top/" + videoDb.PlayUrl,
+		//CoverUrl:      "http://1af0010a.r6.cpolar.top/" + videoDb.CoverUrl,
 		FavoriteCount: videoDb.FavoriteCount,
 		CommentCount:  videoDb.CommentCount,
 		IsFavorite:    videoDb.IsFavorite,

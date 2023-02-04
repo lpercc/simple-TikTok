@@ -18,7 +18,7 @@ func Feed(c *gin.Context) {
 	token := c.Query("token")
 	var userId int64
 	// if user is not exist,userId = -1
-	if user, exist := usersLoginInfo[token]; exist {
+	if user, exist := repository.UsersLoginInfo(token); exist {
 		userId = user.Id
 	} else {
 		userId = -1

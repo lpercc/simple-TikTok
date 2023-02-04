@@ -45,7 +45,7 @@ func CommentActionAdd(content string, userid int64, videoid int64) (id int64) {
 		panic("failed to update table video_list")
 	}
 	// get comment id
-	if db.Last(&comments, "author_id=?", videoid).Error != nil {
+	if db.Last(&comments, "author_id=?", userid).Error != nil {
 		panic("Author can't be find")
 	}
 	return int64(comments.ID)

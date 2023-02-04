@@ -15,7 +15,7 @@ type UserListResponse struct {
 func RelationAction(c *gin.Context) {
 	token := c.Query("token")
 
-	if _, exist := usersLoginInfo[token]; exist {
+	if _, exist := repository.UsersLoginInfo(token); exist {
 		c.JSON(http.StatusOK, repository.Response{StatusCode: 0})
 	} else {
 		c.JSON(http.StatusOK, repository.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
