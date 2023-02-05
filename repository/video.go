@@ -24,16 +24,20 @@ func SaveVideo(newVideo *VideoList) {
 }
 
 func FeedVedioList(userId int64) (Videos []Video) {
-	var count int64
-	Maxnum := int64(30)
 	// video record count
-	GetDB().Model(&VideoList{}).Count(&count)
-	if Maxnum > count {
-		Maxnum = count
+	type APIVideoList struct {
+		ID 		  int64
 	}
-	for i := int64(0); i < Maxnum; i++ {
-		Videos = append(Videos, FeedVideo(count-i, userId))
+	var arr []APIVideoList
+	GetDB().Model(&VideoList{}).Limit(30).Find(&APIVideoList{}).Scan(&arr)
+	//GetDB().Table("video_lists").Count(&count)
+	//GetDB().Model(&VideoList{}).Count(&count)
+	//log.Println("VideoList count:", arr[0].ID)
+
+	for i := int(0); i < len(arr); i++ {
+		Videos = append(Videos, FeedVideo(arr[i].ID, userId))
 	}
+
 	return Videos
 }
 
