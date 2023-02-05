@@ -1,13 +1,13 @@
 package repository
 
 import (
-	"fmt"
 	"log"
 	"net"
 	"strings"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 var LOCALIPV_4 string
@@ -18,7 +18,7 @@ func ConnectAndCheck() {
 	var err error
 	db, err = gorm.Open(
 		mysql.Open(dsn),
-		&gorm.Config{})
+		&gorm.Config{Logger: logger.Default.LogMode(logger.Info),})
 	if err != nil {
 		panic("failed to connect database")
 	}
@@ -39,39 +39,17 @@ func GetDB() *gorm.DB {
 }
 
 // 获取本机网卡IP
-func GetLocalIP() (ipv4 string, err error) {
-	// var (
-	// 	addrs []net.Addr
-	// 	addr net.Addr
-	// 	ipNet *net.IPNet // IP地址
-	// 	isIpNet bool
-	// )
-	// 获取所有网卡
-	addrs, err := net.InterfaceAddrs()
-	if err != nil {
-		return
-	}
-	// 取第一个非lo的网卡IP
-	for _, addr := range addrs {
-		// 这个网络地址是IP地址: ipv4, ipv6
-		ipNet, isIpNet := addr.(*net.IPNet)
-		if ipNet.IP.IsLoopback() {
-			continue
-		}
-		if !isIpNet {
-			continue
-		}
-		// 跳过IPV6
-		if ipNet.IP.To4() == nil {
-			continue
-		} else {
-			ipv4 = ipNet.IP.String()
-		}
-		if strings.HasPrefix(ipv4, "192.168.") {
-			// 192.168.1.1
-			fmt.Println("Local IPv4:", ipv4)
-			return
-		}
-	}
-	return
+func GetLocalIP() (string, error) {
+    // 思路来自于Python版本的内网IP获取
+    conn, err := net.Dial("udp", "8.8.8.8:80")
+    if err != nil {
+        log.Println("internal IP fetch failed, detail:",err)
+    }
+    defer conn.Close()
+ 
+    // udp 面向无连接，所以这些东西只在你本地捣鼓
+    res := conn.LocalAddr().String()
+    res = strings.Split(res, ":")[0]
+	log.Println("internal IP fetch success, IP:",res)
+    return res, nil
 }
