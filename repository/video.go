@@ -14,6 +14,7 @@ type VideoList struct {
 	FavoriteCount int64
 	CommentCount  int64
 	IsFavorite    bool
+	Title		  string
 }
 
 func SaveVideo(newVideo *VideoList) {

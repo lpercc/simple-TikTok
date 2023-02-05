@@ -6,7 +6,6 @@ import (
 	"github.com/lpercc/simple-TikTok/repository"
 	"net/http"
 	"path/filepath"
-	"sync/atomic"
 )
 
 type VideoListResponse struct {
@@ -14,12 +13,12 @@ type VideoListResponse struct {
 	VideoList []repository.Video `json:"video_list"`
 }
 
-var videoIdSequence = int64(2) // video id sequence
+//var videoIdSequence = int64(2) // video id sequence
 
 // Publish check token then save upload file to public directory
 func Publish(c *gin.Context) {
 	token := c.PostForm("token")
-
+	this_title := c.PostForm("title")
 	if _, exist := repository.UsersLoginInfo(token); !exist {
 		c.JSON(http.StatusOK, repository.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
 		return
@@ -45,13 +44,13 @@ func Publish(c *gin.Context) {
 		})
 		return
 	}
-	atomic.AddInt64(&videoIdSequence, 1)
 	newVideo := &repository.VideoList{
 		AuthorId:      user.Id,
 		PlayUrl:       "static/" + finalName,
 		CoverUrl:      "static/bear-1283347_1280.jpg",
 		FavoriteCount: 0,
 		CommentCount:  0,
+		Title: this_title,
 	}
 
 	repository.SaveVideo(newVideo)
