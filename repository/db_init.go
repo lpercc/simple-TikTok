@@ -1,13 +1,16 @@
 package repository
 
 import (
+	"fmt"
 	"log"
+	"net"
+	"strings"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
-var LocalIp = "192.168.10.217"
+var LOCALIPV_4 string
 var db *gorm.DB
 
 func ConnectAndCheck() {
@@ -20,43 +23,55 @@ func ConnectAndCheck() {
 		panic("failed to connect database")
 	}
 	// Migrate the schema
-	if db.AutoMigrate(&Videolist{}, &User{}, &Comments{}, &Favoritelists{}) != nil {
+	if db.AutoMigrate(&VideoList{}, &User{}, &CommentList{}, &FavoriteList{}) != nil {
 		panic("failed to create table")
 	}
-	/*
-		//Create
-		var DemoVideos = []Videolist{
-			{
-				AuthorId:      1,
-				PlayUrl:       "https://www.w3schools.com/html/movie.mp4",
-				CoverUrl:      "https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg",
-				FavoriteCount: 0,
-				CommentCount:  0,
-				IsFavorite:    false,
-			},
-			{
-				AuthorId:      1,
-				PlayUrl:       "http://192.168.196.76:8080/static/2_wx_camera_1674529126546.mp4",
-				CoverUrl:      "https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg",
-				FavoriteCount: 0,
-				CommentCount:  0,
-				IsFavorite:    false,
-			},
-		}
-		db.Create(&DemoUser)
-		db.Create(&DemoVideos)
-
-	*/
 	_db, err := db.DB()
 	if err != nil {
 		log.Fatalln("db connected error ", err)
 	}
-
 	_db.SetMaxOpenConns(100)
 	_db.SetMaxIdleConns(20)
-
 }
 
 func GetDB() *gorm.DB {
 	return db
+}
+
+// 获取本机网卡IP
+func GetLocalIP() (ipv4 string, err error) {
+	// var (
+	// 	addrs []net.Addr
+	// 	addr net.Addr
+	// 	ipNet *net.IPNet // IP地址
+	// 	isIpNet bool
+	// )
+	// 获取所有网卡
+	addrs, err := net.InterfaceAddrs()
+	if err != nil {
+		return
+	}
+	// 取第一个非lo的网卡IP
+	for _, addr := range addrs {
+		// 这个网络地址是IP地址: ipv4, ipv6
+		ipNet, isIpNet := addr.(*net.IPNet)
+		if ipNet.IP.IsLoopback() {
+			continue
+		}
+		if !isIpNet {
+			continue
+		}
+		// 跳过IPV6
+		if ipNet.IP.To4() == nil {
+			continue
+		} else {
+			ipv4 = ipNet.IP.String()
+		}
+		if strings.HasPrefix(ipv4, "192.168.") {
+			// 192.168.1.1
+			fmt.Println("Local IPv4:", ipv4)
+			return
+		}
+	}
+	return
 }

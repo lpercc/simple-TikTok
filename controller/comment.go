@@ -23,7 +23,7 @@ func CommentAction(c *gin.Context) {
 	token := c.Query("token")
 	actionType := c.Query("action_type")
 
-	if user, exist := usersLoginInfo[token]; exist {
+	if user, exist := repository.UsersLoginInfo(token); exist {
 		if actionType == "1" {
 			text := c.Query("comment_text")
 			videoId, _ := strconv.ParseInt(c.Query("video_id"), 10, 64)
@@ -48,6 +48,6 @@ func CommentList(c *gin.Context) {
 	videoId, _ := strconv.ParseInt(c.Query("video_id"), 10, 64)
 	c.JSON(http.StatusOK, CommentListResponse{
 		Response:    repository.Response{StatusCode: 0},
-		CommentList: repository.CommentList(videoId),
+		CommentList: repository.FeedCommentList(videoId),
 	})
 }

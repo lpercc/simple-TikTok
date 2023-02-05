@@ -12,7 +12,7 @@ func FavoriteAction(c *gin.Context) {
 	token := c.Query("token")
 	actionType := c.Query("action_type")
 	videoId, _ := strconv.ParseInt(c.Query("video_id"), 10, 64)
-	if user, exist := usersLoginInfo[token]; exist {
+	if user, exist := repository.UsersLoginInfo(token); exist {
 		if actionType == "1" { //点赞
 			repository.FavoriteActionAdd(user.Id, videoId)
 		} else { //取消点赞
@@ -29,7 +29,7 @@ func FavoriteList(c *gin.Context) {
 	userId, _ := strconv.ParseInt(c.Query("user_id"), 10, 64)
 	token := c.Query("token")
 
-	if _, exist := usersLoginInfo[token]; exist {
+	if _, exist := repository.UsersLoginInfo(token); exist {
 		c.JSON(http.StatusOK, VideoListResponse{
 			Response: repository.Response{
 				StatusCode: 0,

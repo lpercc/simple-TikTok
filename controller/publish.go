@@ -2,11 +2,11 @@ package controller
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
+	"github.com/lpercc/simple-TikTok/repository"
 	"net/http"
 	"path/filepath"
 	"sync/atomic"
-	"github.com/gin-gonic/gin"
-	"github.com/lpercc/simple-TikTok/repository"
 )
 
 type VideoListResponse struct {
@@ -20,7 +20,7 @@ var videoIdSequence = int64(2) // video id sequence
 func Publish(c *gin.Context) {
 	token := c.PostForm("token")
 
-	if _, exist := usersLoginInfo[token]; !exist {
+	if _, exist := repository.UsersLoginInfo(token); !exist {
 		c.JSON(http.StatusOK, repository.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
 		return
 	}
@@ -35,7 +35,7 @@ func Publish(c *gin.Context) {
 	}
 
 	filename := filepath.Base(data.Filename)
-	user := usersLoginInfo[token]
+	user, _ := repository.UsersLoginInfo(token)
 	finalName := fmt.Sprintf("%d_%s", user.Id, filename)
 	saveFile := filepath.Join("./public/", finalName)
 	if err := c.SaveUploadedFile(data, saveFile); err != nil {
@@ -46,16 +46,16 @@ func Publish(c *gin.Context) {
 		return
 	}
 	atomic.AddInt64(&videoIdSequence, 1)
-	newVideo := &repository.Videolist{
-		AuthorId:user.Id,
-		PlayUrl:"static/"+finalName,
-		CoverUrl:"static/bear-1283347_1280.jpg",
-		FavoriteCount:0,
-		CommentCount:0,
+	newVideo := &repository.VideoList{
+		AuthorId:      user.Id,
+		PlayUrl:       "static/" + finalName,
+		CoverUrl:      "static/bear-1283347_1280.jpg",
+		FavoriteCount: 0,
+		CommentCount:  0,
 	}
 
 	repository.SaveVideo(newVideo)
-	
+
 	c.JSON(http.StatusOK, repository.Response{
 		StatusCode: 0,
 		StatusMsg:  finalName + " uploaded successfully",
